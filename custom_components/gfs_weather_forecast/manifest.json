@@ -1,0 +1,17 @@
+{
+  "domain": "gfs_weather_forecast",
+  "name": "GFS Weather Forecast",
+  "version": "0.0.1",
+  "config_flow": true,
+  "documentation": "https://github.com/MarcoGos/gfs_weather_forecast",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": [
+    "@MarcoGos"
+  ],
+  "iot_class": "cloud_polling",
+  "integration_type": "hub"
+}
