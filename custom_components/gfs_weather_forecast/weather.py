@@ -85,7 +85,7 @@ class GfsForecastWeather(WeatherEntity):
         self._attr_name = f"{DEFAULT_NAME}"
         self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME}"
         self._attr_device_info = coordinator.device_info
-        self._attr_condition = ATTR_CONDITION_SUNNY
+        self._attr_condition = None
     
     def _get_forecast(self) -> list[Forecast] | None:
         forecast_data = self.coordinator.data.get("forecast", {})

@@ -1,6 +1,6 @@
 ![Version](https://img.shields.io/github/v/release/MarcoGos/gfs_weather_forecast?include_prereleases)
 
-# GFS Forecast
+# GFS Weather Forecast
 
 This is a custom integration of the GFS Weather Forecast. It will provide a weather entity based on the information gathered with the GFS Weather Forecast addon.
 
