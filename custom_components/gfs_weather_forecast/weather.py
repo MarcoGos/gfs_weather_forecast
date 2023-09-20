@@ -22,6 +22,7 @@ from homeassistant.components.weather import (
     ATTR_CONDITION_SUNNY,
     ATTR_FORECAST_CONDITION,
     ATTR_FORECAST_NATIVE_PRECIPITATION,
+    ATTR_FORECAST_PRECIPITATION_PROBABILITY,
     ATTR_FORECAST_NATIVE_TEMP,
     ATTR_FORECAST_NATIVE_TEMP_LOW,
     ATTR_FORECAST_NATIVE_WIND_SPEED,
@@ -97,13 +98,13 @@ class GfsForecastWeather(WeatherEntity):
             forecast_date = datetime.fromisoformat(key).date()
             if forecast_date > datetime.today().date():
                 chance_of_sun = forecast_data[key].get('chance_of_sun')
-                rain = forecast_data[key].get('rain')
-                min_temperature_daytime = forecast_data[key].get('min_temperature_daytime')
-                temperature_min = round(forecast_data[key].get('temperature_min'))
-                temperature_max = round(forecast_data[key].get('temperature_max'))
-                rain = forecast_data[key].get('rain')
-                windangle = forecast_data[key].get('windangle')
-                windspeed = forecast_data[key].get('windspeed')
+                min_temperature_daytime = forecast_data[key].get('min_temperature_daytime', -999)
+                temperature_min = round(forecast_data[key].get('temperature_min', -999))
+                temperature_max = round(forecast_data[key].get('temperature_max', -999))
+                rain = forecast_data[key].get('rain', 0)
+                chance_of_rain = forecast_data[key].get('chance_of_rain', 0)
+                windangle = forecast_data[key].get('windangle', 0)
+                windspeed = forecast_data[key].get('windspeed', 0)
                 if temperature_max > -999 and temperature_min > -999:
                     next_day = {
                         ATTR_FORECAST_TIME: key,
@@ -112,6 +113,7 @@ class GfsForecastWeather(WeatherEntity):
                         ATTR_FORECAST_NATIVE_TEMP_LOW: temperature_min,
                         ATTR_FORECAST_NATIVE_TEMP: temperature_max,
                         ATTR_FORECAST_NATIVE_PRECIPITATION: rain,
+                        ATTR_FORECAST_PRECIPITATION_PROBABILITY: chance_of_rain,
                         ATTR_FORECAST_WIND_BEARING: windangle,
                         ATTR_FORECAST_NATIVE_WIND_SPEED: windspeed
                     }

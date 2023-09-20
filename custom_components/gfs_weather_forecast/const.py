@@ -9,7 +9,7 @@ VERSION = "1.0.1"
 # Platforms
 WEATHER = "weather"
 
-DEFAULT_SYNC_INTERVAL = 30  # seconds
+DEFAULT_SYNC_INTERVAL = 15  # seconds
 
 CONF_API_PORT = 8000
 
