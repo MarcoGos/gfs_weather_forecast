@@ -6,7 +6,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-#from homeassistant.const import CONF_NAME, PERCENTAGE, TEMP_CELSIUS, UnitOfSpeed
+from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -38,6 +38,17 @@ DESCRIPTIONS: list[SensorEntityDescription] = [
         icon="mdi:av-timer"
     ),
     SensorEntityDescription(
+        key="max_offset",
+        name="Maximum Offset",
+        icon="mdi:av-timer"
+    ),
+    SensorEntityDescription(
+        key="loading_progress",
+        name="Progress",
+        icon="mdi:download-circle-outline",
+        native_unit_of_measurement=PERCENTAGE
+    ),
+    SensorEntityDescription(
         key="current_date",
         name="Current Date",
         icon="mdi:calendar"
@@ -61,7 +72,6 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up GFS Forecast sensors based on a config entry."""
-    #conf_name = entry.data.get(CONF_NAME, hass.config.location_name)
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
     entities: list[GFSForecastSensor] = []
@@ -96,7 +106,7 @@ class GFSForecastSensor(CoordinatorEntity[GfsForecastDataUpdateCoordinator], Sen
         self.entity_id = (
             f"{SENSOR_DOMAIN}.{DEFAULT_NAME}_{description.name}".lower()
         )
-        self.entity_description = description
+        self.entity_description: SensorEntityDescription = description
         self._attr_name = description.name
         self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME} {self.name}"
         self._attr_device_info = coordinator.device_info
@@ -105,4 +115,8 @@ class GFSForecastSensor(CoordinatorEntity[GfsForecastDataUpdateCoordinator], Sen
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
         status_data = self.coordinator.data.get("status", {})
-        return status_data.get(self.entity_description.key, '')
+        if self.entity_description.native_unit_of_measurement == PERCENTAGE:
+            default_value = 0
+        else:
+            default_value = '-'
+        return status_data.get(self.entity_description.key, default_value)

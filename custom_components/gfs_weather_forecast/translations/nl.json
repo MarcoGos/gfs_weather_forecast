@@ -5,7 +5,7 @@
         },
         "error": {
             "cannot_connect": "Er zijn problemen met de verbinding",
-            "invalid_auth": "Het lijkt er op dat uw position zich niet de gekozen regio bevindt",
+            "invalid_auth": "Het lijkt er op dat de GFS Weather Forecast addon niet draait",
             "unknown": "Onverwachte foutmelding"
         },
         "step": {

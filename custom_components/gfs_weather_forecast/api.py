@@ -53,15 +53,16 @@ class GFSForecastApi:
         return success, status
 
     async def __perform_request(self, url: str) -> tuple[bool, dict[str, Any]]:
-        with async_timeout.timeout(TIMEOUT):
-            response = await self._session.get(
-                url=url, #headers=self._headers
-            )
-        res: dict[str, Any] = {}
-        if response.ok:
-            res = await response.json()  # .content.decode("utf-8")
-            _LOGGER.debug(f"{DOMAIN} - __perform_request succeeded")
-        else:
-            _LOGGER.error(f"Error: {DOMAIN} - __perform_request {response.status}")
+        try:
+            with async_timeout.timeout(TIMEOUT):
+                response = await self._session.get(url=url)
+            res: dict[str, Any] = {}
+            if response.ok:
+                res = await response.json()  # .content.decode("utf-8")
+                _LOGGER.debug(f"{DOMAIN} - __perform_request succeeded")
+            else:
+                _LOGGER.error(f"Error: {DOMAIN} - __perform_request {response.status}")
 
-        return response.ok, res
+            return response.ok, res
+        except:
+            return False, {}

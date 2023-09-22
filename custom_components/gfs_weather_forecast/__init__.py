@@ -45,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         identifiers={(DOMAIN, entry.entry_id)},
         manufacturer=MANUFACTURER,
         name=NAME,
-        model=VERSION
+        sw_version=VERSION
     )
 
     hass.data[DOMAIN][entry.entry_id] = coordinator = GfsForecastDataUpdateCoordinator(
