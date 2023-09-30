@@ -1,19 +1,11 @@
 import logging
-from collections.abc import Mapping
-from typing import Any
 from datetime import datetime
 
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.components.weather import (
-    ATTR_CONDITION_CLEAR_NIGHT,
     ATTR_CONDITION_CLOUDY,
-    ATTR_CONDITION_FOG,
-    ATTR_CONDITION_HAIL,
-    ATTR_CONDITION_LIGHTNING,
     ATTR_CONDITION_PARTLYCLOUDY,
     ATTR_CONDITION_POURING,
     ATTR_CONDITION_RAINY,
@@ -31,10 +23,9 @@ from homeassistant.components.weather import (
     DOMAIN as SENSOR_DOMAIN,
     Forecast,
     WeatherEntity,
-    WeatherEntityFeature
+    WeatherEntityFeature # type: ignore
 )
 from homeassistant.const import (
-    CONF_NAME,
     UnitOfLength,
     UnitOfPrecipitationDepth,
     UnitOfPressure,
@@ -44,7 +35,7 @@ from homeassistant.const import (
     MINOR_VERSION
 )
 from .coordinator import GfsForecastDataUpdateCoordinator
-from .const import DOMAIN, NAME, MODEL, MANUFACTURER, DEFAULT_NAME
+from .const import DOMAIN, DEFAULT_NAME
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -73,7 +64,7 @@ class GfsForecastWeather(WeatherEntity):
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_visibility_unit = UnitOfLength.METERS
     _attr_native_wind_speed_unit = UnitOfSpeed.METERS_PER_SECOND
-    _attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
+    _attr_supported_features = WeatherEntityFeature.FORECAST_DAILY # type: ignore
 
     def __init__(
         self,
@@ -93,7 +84,7 @@ class GfsForecastWeather(WeatherEntity):
         if forecast_data == {}:
             return None
 
-        forecast = []
+        forecast: list[Forecast] = []
         for key in forecast_data.keys():
             forecast_date = datetime.fromisoformat(key).date()
             if forecast_date > datetime.today().date():
@@ -106,7 +97,7 @@ class GfsForecastWeather(WeatherEntity):
                 windangle = forecast_data[key].get('windangle', 0)
                 windspeed = forecast_data[key].get('windspeed', 0)
                 if temperature_max > -999 and temperature_min > -999:
-                    next_day = {
+                    next_day: Forecast = {
                         ATTR_FORECAST_TIME: key,
                         ATTR_FORECAST_CONDITION:
                             self._get_condition(chance_of_sun, rain, min_temperature_daytime),

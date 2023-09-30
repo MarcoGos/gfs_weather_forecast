@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta, date
+from datetime import timedelta
+from typing import Any
 import logging
 
 from homeassistant.helpers.update_coordinator import UpdateFailed, DataUpdateCoordinator
@@ -15,13 +16,14 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
-    _status = {}
-    _forecast = {}
-    _current = {}
+    _status: dict[str, Any] = {}
+    _forecast: dict[str, Any] = {}
+    _current: dict[str, Any] = {}
+    data: dict[str, Any]
 
     def __init__(self, hass: HomeAssistant, client: GFSForecastApi, device_info: DeviceInfo) -> None:
         """Initialize."""
-        self.api = client
+        self.api: GFSForecastApi = client
         self.platforms: list[str] = []
         self.last_updated = None
         self.device_info = device_info
@@ -33,7 +35,7 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=DEFAULT_SYNC_INTERVAL),
         )
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> dict[str, Any]:
         """Update data via library."""
         try:
             self._status = await self.api.async_get_status()

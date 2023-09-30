@@ -7,10 +7,8 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
-from homeassistant.const import CONF_NAME
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import config_validation
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import NAME, DOMAIN, CONF_API_PORT
@@ -28,7 +26,7 @@ class PlaceholderHub:
     def __init__(self) -> None:
         """Initialize."""
 
-    async def authenticate(self, session, api_port) -> bool:
+    async def authenticate(self, session: Any, api_port: int) -> bool:
         """Test if we can find data for the given api port."""
         _LOGGER.info(f"authenticate called")
         api = GFSForecastApi(session, api_port)
@@ -60,7 +58,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         STEP_USER_DATA_SCHEMA = vol.Schema(
             {
-                vol.Required("api_port", default=CONF_API_PORT): int,
+                vol.Required("api_port", default=CONF_API_PORT): int, # type: ignore
             }
         )
 

@@ -1,9 +1,7 @@
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
-    SensorDeviceClass,
     SensorEntity,
-    SensorEntityDescription,
-    SensorStateClass,
+    SensorEntityDescription
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
@@ -25,28 +23,33 @@ DESCRIPTIONS: list[SensorEntityDescription] = [
     SensorEntityDescription(
         key="loading_date",
         name="Loading Date",
-        icon="mdi:calendar"
+        icon="mdi:calendar",
+        entity_registry_enabled_default=False
     ),
     SensorEntityDescription(
         key="loading_pass",
         name="Loading Pass",
-        icon="mdi:clock-start"
+        icon="mdi:clock-start",
+        entity_registry_enabled_default=False
     ),
     SensorEntityDescription(
         key="loading_offset",
         name="Loading Offset",
-        icon="mdi:av-timer"
+        icon="mdi:av-timer",
+        entity_registry_enabled_default=False
     ),
     SensorEntityDescription(
         key="max_offset",
         name="Maximum Offset",
-        icon="mdi:av-timer"
+        icon="mdi:av-timer",
+        entity_registry_enabled_default=False
     ),
     SensorEntityDescription(
         key="loading_progress",
         name="Progress",
         icon="mdi:download-circle-outline",
-        native_unit_of_measurement=PERCENTAGE
+        native_unit_of_measurement=PERCENTAGE,
+        entity_registry_enabled_default=False
     ),
     SensorEntityDescription(
         key="current_date",
@@ -62,7 +65,8 @@ DESCRIPTIONS: list[SensorEntityDescription] = [
         key="used_latitude_longitude",
         name="Used Position",
         icon="mdi:crosshairs-gps",
-        entity_category=EntityCategory.DIAGNOSTIC
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False
     )
 ]
 
@@ -106,8 +110,8 @@ class GFSForecastSensor(CoordinatorEntity[GfsForecastDataUpdateCoordinator], Sen
         self.entity_id = (
             f"{SENSOR_DOMAIN}.{DEFAULT_NAME}_{description.name}".lower()
         )
-        self.entity_description: SensorEntityDescription = description
-        self._attr_name = description.name
+        self.entity_description = description
+        self._attr_name = description.name # type: ignore
         self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME} {self.name}"
         self._attr_device_info = coordinator.device_info
 
