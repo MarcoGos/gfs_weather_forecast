@@ -4,7 +4,7 @@ NAME = "GFS Weather Forecast"
 DOMAIN = "gfs_weather_forecast"
 MANUFACTURER = "NOAA"
 MODEL = "GFS Weather Forecast"
-VERSION = "1.0.5"
+VERSION = "1.0.6"
 
 # Platforms
 WEATHER = "weather"

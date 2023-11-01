@@ -30,9 +30,7 @@ from homeassistant.const import (
     UnitOfPrecipitationDepth,
     UnitOfPressure,
     UnitOfSpeed,
-    UnitOfTemperature,
-    MAJOR_VERSION,
-    MINOR_VERSION
+    UnitOfTemperature
 )
 from .coordinator import GfsForecastDataUpdateCoordinator
 from .const import DOMAIN, DEFAULT_NAME
@@ -78,7 +76,7 @@ class GfsForecastWeather(WeatherEntity):
         self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME}"
         self._attr_device_info = coordinator.device_info
         self._attr_condition = None
-    
+
     def _get_forecast(self) -> list[Forecast] | None:
         forecast_data = self.coordinator.data.get("forecast", {})
         if forecast_data == {}:
@@ -111,7 +109,7 @@ class GfsForecastWeather(WeatherEntity):
                     forecast.append(next_day)
 
         return forecast
-    
+
     def _get_condition(self, chance_of_sun: int, rain: float, temperature_min: float) -> str:
         if rain > 0.2:
             if temperature_min > 3:
@@ -133,12 +131,6 @@ class GfsForecastWeather(WeatherEntity):
     @property
     def icon(self):
         return 'mdi:weather-partly-cloudy'
-    
-    @property
-    def forecast(self) -> list[Forecast] | None:
-        if MAJOR_VERSION * 100 + MINOR_VERSION > 202404:
-            return None
-        return self._get_forecast()
-        
+
     async def async_forecast_daily(self) -> list[Forecast] | None:
         return self._get_forecast()
