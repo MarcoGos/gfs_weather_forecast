@@ -19,6 +19,7 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
     _status: dict[str, Any] = {}
     _forecast: dict[str, Any] = {}
     _current: dict[str, Any] = {}
+    _first_run: bool = True
     data: dict[str, Any]
 
     def __init__(self, hass: HomeAssistant, client: GFSForecastApi, device_info: DeviceInfo) -> None:
@@ -39,9 +40,12 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             self._status = await self.api.async_get_status()
-            if self._status.get('status', '') == 'Finished' and self._status.get('current', {}) != self._current:
+            if (self._status.get('status', '') == 'Finished' and 
+                self._status.get('current', {}) != self._current) or \
+                self._first_run:
                 self._forecast = await self.api.async_get_forecast()
             self._current = self._status.get('current', {})
+            self._first_run = False
 
             status = { k: v for k, v in self._status.items() if not isinstance(v, dict) }
             status |= { "current_" + k: v for k, v in self._status.get('current', {}).items() }
