@@ -1,8 +1,10 @@
+from datetime import datetime
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
     SensorEntity,
-    SensorEntityDescription
+    SensorEntityDescription,
 )
+from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant
@@ -17,52 +19,57 @@ from .coordinator import GfsForecastDataUpdateCoordinator
 DESCRIPTIONS: list[SensorEntityDescription] = [
     SensorEntityDescription(
         key="status",
-        name="Status",
-        icon="mdi:check-circle-outline"
+        translation_key="status",
+        icon="mdi:check-circle-outline",
+        options=["loading", "waiting", "finished"],
+        device_class=SensorDeviceClass.ENUM,
     ),
     SensorEntityDescription(
         key="loading_date",
-        name="Loading Date",
-        icon="mdi:calendar"
+        translation_key="loading_date",
+        device_class=SensorDeviceClass.DATE,
+        icon="mdi:calendar",
     ),
     SensorEntityDescription(
         key="loading_pass",
-        name="Loading Pass",
-        icon="mdi:clock-start"
+        translation_key="loading_pass",
+        icon="mdi:clock-start",
     ),
     SensorEntityDescription(
         key="loading_offset",
-        name="Loading Offset",
-        icon="mdi:av-timer"
+        translation_key="loading_offset",
+        icon="mdi:av-timer",
     ),
     SensorEntityDescription(
         key="max_offset",
-        name="Maximum Offset",
-        icon="mdi:av-timer"
+        translation_key="max_offset",
+        icon="mdi:av-timer",
     ),
     SensorEntityDescription(
         key="loading_progress",
-        name="Progress",
+        translation_key="loading_progress",
         icon="mdi:download-circle-outline",
-        native_unit_of_measurement=PERCENTAGE
+        native_unit_of_measurement=PERCENTAGE,
     ),
     SensorEntityDescription(
         key="current_date",
-        name="Current Date",
-        icon="mdi:calendar"
+        translation_key="current_date",
+        icon="mdi:calendar",
+        device_class=SensorDeviceClass.DATE,
     ),
     SensorEntityDescription(
         key="current_pass",
-        name="Current Pass",
-        icon="mdi:clock-start"
+        translation_key="current_pass",
+        icon="mdi:clock-start",
     ),
     SensorEntityDescription(
         key="used_latitude_longitude",
-        name="Used Position",
+        translation_key="used_latitude_longitude",
         icon="mdi:crosshairs-gps",
-        entity_category=EntityCategory.DIAGNOSTIC
-    )
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
 ]
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -87,7 +94,9 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class GFSForecastSensor(CoordinatorEntity[GfsForecastDataUpdateCoordinator], SensorEntity):
+class GFSForecastSensor(
+    CoordinatorEntity[GfsForecastDataUpdateCoordinator], SensorEntity
+):
     """Defines a GFS Forecast sensor."""
 
     _attr_has_entity_name = True
@@ -101,20 +110,27 @@ class GFSForecastSensor(CoordinatorEntity[GfsForecastDataUpdateCoordinator], Sen
         """Initialize GFS Forecast sensor."""
         super().__init__(coordinator=coordinator)
 
-        self.entity_id = (
-            f"{SENSOR_DOMAIN}.{DEFAULT_NAME}_{description.name}".lower()
-        )
         self.entity_description = description
-        self._attr_name = description.name # type: ignore
-        self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME} {self.name}"
+        self.entity_id = f"{SENSOR_DOMAIN}.{DEFAULT_NAME}_{description.key}".lower()
+        self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME} {description.key}"
         self._attr_device_info = coordinator.device_info
 
     @property
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
         status_data = self.coordinator.data.get("status", {})
+
+        if self.entity_description.device_class == SensorDeviceClass.DATE:
+            str_value = status_data.get(self.entity_description.key, "")
+            if not str_value:
+                return None
+            value = datetime.strptime(str_value, "%Y-%m-%d").date()
+            return value
+
         if self.entity_description.native_unit_of_measurement == PERCENTAGE:
             default_value = 0
         else:
-            default_value = '-'
+            default_value = None
+        if self.entity_description.key == "status":
+            return status_data.get("status", "").lower()
         return status_data.get(self.entity_description.key, default_value)

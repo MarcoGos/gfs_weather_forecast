@@ -22,33 +22,33 @@
                 "name": "Status",
                 "state": {
                     "loading": "Laden",
-                    "waiting": "Klaar",
-                    "finished": "Fout"
+                    "waiting": "Wachten",
+                    "finished": "Voltooid"
                 }
             },
             "loading_date": {
-                "name": "Laad Datum"
+                "name": "Te laden datum"
             },
             "loading_pass": {
-                "name": "Laad Pass"
+                "name": "Te laden doorgang"
             },
             "loading_offset": {
-                "name": "Laad Offset"
+                "name": "Te laden offset"
             },
             "max_offset": {
-                "name": "Max Offset"
+                "name": "Max. offset"
             },
             "loading_progress": {
-                "name": "Laad Voortgang"
+                "name": "Voortgang"
             },
             "current_date": {
-                "name": "Huidige Datum"
+                "name": "Huidige datum"
             },
             "current_pass": {
-                "name": "Huidige Pass"
+                "name": "Huidige doorgang"
             },
             "used_latitude_longitude": {
-                "name": "Gebruikte Breedtegraad/Lengtegraad"
+                "name": "Gebruikte breedtegraad/lengtegraad"
             }
         }
     }
