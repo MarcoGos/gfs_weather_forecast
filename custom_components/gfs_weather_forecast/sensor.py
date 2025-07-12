@@ -127,10 +127,7 @@ class GFSForecastSensor(
             value = datetime.strptime(str_value, "%Y-%m-%d").date()
             return value
 
-        if self.entity_description.native_unit_of_measurement == PERCENTAGE:
-            default_value = 0
-        else:
-            default_value = None
         if self.entity_description.key == "status":
             return status_data.get("status", "").lower()
-        return status_data.get(self.entity_description.key, default_value)
+
+        return status_data.get(self.entity_description.key, None)
