@@ -15,5 +15,41 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "status": {
+                "name": "Status",
+                "state": {
+                    "loading": "Loading",
+                    "waiting": "Waiting",
+                    "finished": "Finished"
+                }
+            },
+            "loading_date": {
+                "name": "Loading Date"
+            },
+            "loading_pass": {
+                "name": "Loading Pass"
+            },
+            "loading_offset": {
+                "name": "Loading Offset"
+            },
+            "max_offset": {
+                "name": "Max Offset"
+            },
+            "loading_progress": {
+                "name": "Loading Progress"
+            },
+            "current_date": {
+                "name": "Current Date"
+            },
+            "current_pass": {
+                "name": "Current Pass"
+            },
+            "used_latitude_longitude": {
+                "name": "Used Latitude/Longitude"
+            }
+        }
     }
 }

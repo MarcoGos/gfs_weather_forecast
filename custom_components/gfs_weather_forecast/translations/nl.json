@@ -15,5 +15,41 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "status": {
+                "name": "Status",
+                "state": {
+                    "loading": "Laden",
+                    "waiting": "Klaar",
+                    "finished": "Fout"
+                }
+            },
+            "loading_date": {
+                "name": "Laad Datum"
+            },
+            "loading_pass": {
+                "name": "Laad Pass"
+            },
+            "loading_offset": {
+                "name": "Laad Offset"
+            },
+            "max_offset": {
+                "name": "Max Offset"
+            },
+            "loading_progress": {
+                "name": "Laad Voortgang"
+            },
+            "current_date": {
+                "name": "Huidige Datum"
+            },
+            "current_pass": {
+                "name": "Huidige Pass"
+            },
+            "used_latitude_longitude": {
+                "name": "Gebruikte Breedtegraad/Lengtegraad"
+            }
+        }
     }
 }

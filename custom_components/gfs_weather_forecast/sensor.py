@@ -23,33 +23,28 @@ DESCRIPTIONS: list[SensorEntityDescription] = [
     SensorEntityDescription(
         key="loading_date",
         name="Loading Date",
-        icon="mdi:calendar",
-        entity_registry_enabled_default=False
+        icon="mdi:calendar"
     ),
     SensorEntityDescription(
         key="loading_pass",
         name="Loading Pass",
-        icon="mdi:clock-start",
-        entity_registry_enabled_default=False
+        icon="mdi:clock-start"
     ),
     SensorEntityDescription(
         key="loading_offset",
         name="Loading Offset",
-        icon="mdi:av-timer",
-        entity_registry_enabled_default=False
+        icon="mdi:av-timer"
     ),
     SensorEntityDescription(
         key="max_offset",
         name="Maximum Offset",
-        icon="mdi:av-timer",
-        entity_registry_enabled_default=False
+        icon="mdi:av-timer"
     ),
     SensorEntityDescription(
         key="loading_progress",
         name="Progress",
         icon="mdi:download-circle-outline",
-        native_unit_of_measurement=PERCENTAGE,
-        entity_registry_enabled_default=False
+        native_unit_of_measurement=PERCENTAGE
     ),
     SensorEntityDescription(
         key="current_date",
@@ -65,8 +60,7 @@ DESCRIPTIONS: list[SensorEntityDescription] = [
         key="used_latitude_longitude",
         name="Used Position",
         icon="mdi:crosshairs-gps",
-        entity_category=EntityCategory.DIAGNOSTIC,
-        entity_registry_enabled_default=False
+        entity_category=EntityCategory.DIAGNOSTIC
     )
 ]
 
