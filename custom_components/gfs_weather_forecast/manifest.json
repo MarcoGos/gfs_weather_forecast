@@ -1,7 +1,7 @@
 {
   "domain": "gfs_weather_forecast",
   "name": "GFS Weather Forecast",
-  "version": "1.0.12",
+  "version": "1.0.11",
   "config_flow": true,
   "documentation": "https://github.com/MarcoGos/gfs_weather_forecast",
   "requirements": [],
