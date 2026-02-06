@@ -13,6 +13,6 @@ DEFAULT_SYNC_INTERVAL = 15  # seconds
 
 CONF_API_PORT: int = 8000
 
-DEFAULT_NAME = NAME
+DEFAULT_NAME = DOMAIN
 FORECAST_URL = "api/forecast"
 STATUS_URL = "api/status"
