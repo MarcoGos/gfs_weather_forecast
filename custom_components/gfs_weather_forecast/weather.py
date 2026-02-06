@@ -64,9 +64,9 @@ class GfsForecastWeather(WeatherEntity):
     ) -> None:
         self.coordinator = coordinator
 
-        self.entity_id = f"{SENSOR_DOMAIN}.{NAME}".lower()
+        self.entity_id = f"{SENSOR_DOMAIN}.{DEFAULT_NAME}".lower()
         self._attr_name = f"{NAME}"
-        self._attr_unique_id = f"{entry_id}-{NAME}"
+        self._attr_unique_id = f"{entry_id}-{DEFAULT_NAME}"
         self._attr_device_info = coordinator.device_info
         self._attr_condition = None
 
