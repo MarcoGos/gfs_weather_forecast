@@ -33,7 +33,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 from .coordinator import GfsForecastDataUpdateCoordinator
-from .const import DOMAIN, DEFAULT_NAME
+from .const import DOMAIN, DEFAULT_NAME, NAME
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
