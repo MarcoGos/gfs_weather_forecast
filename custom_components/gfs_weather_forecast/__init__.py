@@ -1,18 +1,18 @@
 """The GFS Forecast integration."""
 
 from __future__ import annotations
-from typing import Any
+
 import logging
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.device_registry import DeviceEntryType
-from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.const import Platform
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 
 from .api import GFSForecastApi
-from .const import DOMAIN, NAME, VERSION, MANUFACTURER
+from .const import DOMAIN, MANUFACTURER, NAME, VERSION
 from .coordinator import GfsForecastDataUpdateCoordinator
 from .websocket_api import async_setup as async_setup_websocket_api
 
