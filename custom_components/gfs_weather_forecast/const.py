@@ -15,4 +15,5 @@ CONF_API_PORT: int = 8000
 
 DEFAULT_NAME = DOMAIN
 FORECAST_URL = "api/forecast"
+FULL_FORECAST_URL = "api/latest"
 STATUS_URL = "api/status"

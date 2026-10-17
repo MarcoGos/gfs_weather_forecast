@@ -1,4 +1,5 @@
 """The GFS Forecast integration."""
+
 from __future__ import annotations
 from typing import Any
 import logging
@@ -13,16 +14,15 @@ from homeassistant.const import Platform
 from .api import GFSForecastApi
 from .const import DOMAIN, NAME, VERSION, MANUFACTURER
 from .coordinator import GfsForecastDataUpdateCoordinator
+from .websocket_api import async_setup as async_setup_websocket_api
 
-PLATFORMS: list[Platform] = [
-    Platform.WEATHER,
-    Platform.SENSOR
-]
+PLATFORMS: list[Platform] = [Platform.WEATHER, Platform.SENSOR]
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
 async def async_setup(hass: HomeAssistant, config: Any) -> bool:
+    async_setup_websocket_api(hass)
     return True
 
 
@@ -43,11 +43,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         identifiers={(DOMAIN, entry.entry_id)},
         manufacturer=MANUFACTURER,
         name=NAME,
-        sw_version=VERSION
+        sw_version=VERSION,
     )
 
     hass.data[DOMAIN][entry.entry_id] = coordinator = GfsForecastDataUpdateCoordinator(
-        hass=hass, client=client, device_info=device_info)
+        hass=hass, client=client, device_info=device_info
+    )
 
     await coordinator.async_config_entry_first_refresh()
 

@@ -28,3 +28,38 @@ The following sensors will be registered:
 ![Sensors](/assets/sensors.png)
 
 The sensor information is updated every 4 hours.
+
+## Full forecast for dashboard cards
+
+The integration also retrieves the add-on's complete `/api/latest` JSON, including
+`info` and all forecast-hour fields. It caches this in Home Assistant at startup
+and when the status reports a newly finished forecast run. Status is checked every
+15 seconds; card requests read the cache without contacting the add-on.
+
+Authenticated dashboard cards can retrieve the original JSON over Home Assistant's
+WebSocket connection:
+
+```javascript
+const forecast = await this.hass.callWS({
+    type: "gfs_weather_forecast/get_forecast",
+});
+```
+
+With multiple configured integration entries, include `entry_id` to select one:
+
+```javascript
+const forecast = await this.hass.callWS({
+    type: "gfs_weather_forecast/get_forecast",
+    entry_id: "YOUR_CONFIG_ENTRY_ID",
+});
+```
+
+The result has the same structure as the add-on's JSON file. No public file URL,
+browser access to the add-on, CORS configuration, or large entity attributes are
+needed. The existing GFS Weather Card's URL loader must be updated to use this
+call; a WebSocket command cannot be entered in its JSON URL field.
+
+If an update fails, the last successful JSON remains available and the integration
+retries on the next status poll. Command errors use `not_loaded` for missing or
+unloaded entries, `entry_required` for ambiguous selection, and `not_ready` when
+no forecast has been cached yet. Unloading an entry removes access to its cache.

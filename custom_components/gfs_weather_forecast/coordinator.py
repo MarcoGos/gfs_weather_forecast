@@ -14,20 +14,25 @@ from .const import (
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
+
 class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
+
     _status: dict[str, Any] = {}
     _forecast: dict[str, Any] = {}
     _current: dict[str, Any] = {}
     _first_run: bool = True
     data: dict[str, Any]
 
-    def __init__(self, hass: HomeAssistant, client: GFSForecastApi, device_info: DeviceInfo) -> None:
+    def __init__(
+        self, hass: HomeAssistant, client: GFSForecastApi, device_info: DeviceInfo
+    ) -> None:
         """Initialize."""
         self.api: GFSForecastApi = client
         self.platforms: list[str] = []
         self.last_updated = None
         self.device_info = device_info
+        self._full_forecast: dict[str, Any] = {}
 
         super().__init__(
             hass,
@@ -40,20 +45,32 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             self._status = await self.api.async_get_status()
-            if (self._status.get('status', '') == 'Finished' and 
-                self._status.get('current', {}) != self._current) or \
-                self._first_run:
-                self._forecast = await self.api.async_get_forecast()
-            self._current = self._status.get('current', {})
+            if (
+                self._status.get("status", "") == "Finished"
+                and self._status.get("current", {}) != self._current
+            ) or self._first_run:
+                forecast = await self.api.async_get_forecast()
+                full_forecast = await self.api.async_get_full_forecast()
+                self._forecast = forecast
+                self._full_forecast = full_forecast
+                if self._status.get("status") == "Finished":
+                    self._current = self._status.get("current", {})
             self._first_run = False
 
-            status = { k: v for k, v in self._status.items() if not isinstance(v, dict) }
-            status |= { "current_" + k: v for k, v in self._status.get('current', {}).items() }
-            status |= { "loading_" + k: v for k, v in self._status.get('loading', {}).items() }
+            status = {k: v for k, v in self._status.items() if not isinstance(v, dict)}
+            status |= {
+                "current_" + k: v for k, v in self._status.get("current", {}).items()
+            }
+            status |= {
+                "loading_" + k: v for k, v in self._status.get("loading", {}).items()
+            }
             return {
                 "status": status,
-                "forecast": self._forecast
+                "forecast": self._forecast,
+                "full_forecast": self._full_forecast,
             }
         except Exception as exception:
-            _LOGGER.error(f"Error GfsForecastDataUpdateCoordinator _async_update_data: {exception}")
+            _LOGGER.error(
+                f"Error GfsForecastDataUpdateCoordinator _async_update_data: {exception}"
+            )
             raise UpdateFailed() from exception
