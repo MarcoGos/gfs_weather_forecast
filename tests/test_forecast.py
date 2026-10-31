@@ -129,12 +129,13 @@ class ForecastTests(unittest.IsolatedAsyncioTestCase):
             "current": {"run": 1},
         }
         await coordinator._async_update_data()
+        self.client.async_get_full_forecast.assert_not_awaited()
         self.client.async_get_status.return_value = {
             "status": "Finished",
             "current": {"run": 1},
         }
         await coordinator._async_update_data()
-        self.assertEqual(self.client.async_get_full_forecast.await_count, 2)
+        self.client.async_get_full_forecast.assert_awaited_once()
 
     async def test_failed_refresh_retains_cache_and_retries(self):
         coordinator = self.load_coordinator()

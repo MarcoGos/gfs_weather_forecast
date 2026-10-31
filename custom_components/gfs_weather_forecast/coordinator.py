@@ -45,17 +45,15 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             self._status = await self.api.async_get_status()
-            if (
-                self._status.get("status", "") == "Finished"
-                and self._status.get("current", {}) != self._current
-            ) or self._first_run:
+            if self._status.get("status", "") == "Finished" and (
+                self._status.get("current", {}) != self._current or self._first_run
+            ):
                 forecast = await self.api.async_get_forecast()
                 full_forecast = await self.api.async_get_full_forecast()
                 self._forecast = forecast
                 self._full_forecast = full_forecast
-                if self._status.get("status") == "Finished":
-                    self._current = self._status.get("current", {})
-            self._first_run = False
+                self._current = self._status.get("current", {})
+                self._first_run = False
 
             status = {k: v for k, v in self._status.items() if not isinstance(v, dict)}
             status |= {
