@@ -6,14 +6,27 @@ This is a custom integration of the GFS Weather Forecast. It will provide a weat
 
 ## Installation
 
-First make sure you installed the GFS Weather Forecast addon, see https://github.com/MarcoGos/ha-addons. After the addon is running you can install this integration.
+First make sure you installed the GFS Weather Forecast addon, see https://github.com/MarcoGos/addon-gfs_weather_forecast. After the addon is running you can install this integration.
 
 Via HACS:
 
-- Add the following custom repository as an integration:
-    - MarcoGos/gfs_weather_forecast
-- Restart Home Assistant
-- Add the integration to Home Assistant
+[![Add repository to HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MarcoGos&repository=gfs_weather_forecast&category=integration)
+
+<details>
+<summary>Add the repository manually</summary>
+
+1. Open **HACS** in Home Assistant.
+2. Open the three-dot menu in the top-right corner and select **Custom repositories**.
+3. Enter `https://github.com/MarcoGos/gfs_weather_forecast` as the repository URL.
+4. Select **Integration** as the type and click **Add**.
+
+</details>
+
+After adding the repository using either method:
+
+1. Find **GFS Weather Forecast** in HACS and download it.
+2. Restart Home Assistant.
+3. Go to **Settings > Devices & services > Add integration** and search for **GFS Weather Forecast**.
 
 ## Setup
 
