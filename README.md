@@ -32,8 +32,6 @@ After adding the repository using either method:
 
 During the setup of the integration the api port of the addon needs to be provided, the default port is 8765.
 
-![Setup](/assets/setup.png)
-
 ## What to expect
 
 The following sensors will be registered:
