@@ -42,6 +42,14 @@ The following sensors will be registered:
 
 The sensor information is updated every 4 hours.
 
+## Custom dashboard card
+
+Use the [GFS Weather Card](https://github.com/MarcoGos/gfs-weather-card) to display
+this integration's forecast data as a horizontally scrollable table on your
+Home Assistant dashboard. The card connects directly to the integration through
+Home Assistant; no separate forecast URL or CORS configuration is needed.
+See the card's repository for installation and configuration instructions.
+
 ## Full forecast for dashboard cards
 
 The integration also retrieves the add-on's complete `/api/latest` JSON, including
@@ -69,8 +77,7 @@ const forecast = await this.hass.callWS({
 
 The result has the same structure as the add-on's JSON file. No public file URL,
 browser access to the add-on, CORS configuration, or large entity attributes are
-needed. The existing GFS Weather Card's URL loader must be updated to use this
-call; a WebSocket command cannot be entered in its JSON URL field.
+needed.
 
 If an update fails, the last successful JSON remains available and the integration
 retries on the next status poll. Command errors use `not_loaded` for missing or
