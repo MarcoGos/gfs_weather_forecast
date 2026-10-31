@@ -11,7 +11,7 @@ WEATHER = "weather"
 
 DEFAULT_SYNC_INTERVAL = 15  # seconds
 
-CONF_API_PORT: int = 8000
+CONF_API_PORT: int = 8765
 
 DEFAULT_NAME = DOMAIN
 FORECAST_URL = "api/forecast"

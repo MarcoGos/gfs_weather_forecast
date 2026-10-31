@@ -30,7 +30,7 @@ After adding the repository using either method:
 
 ## Setup
 
-During the setup of the integration the api port of the addon needs to be provided, the default port is 8000.
+During the setup of the integration the api port of the addon needs to be provided, the default port is 8765.
 
 ![Setup](/assets/setup.png)
 

@@ -12,7 +12,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 
 from .api import GFSForecastApi
-from .const import DOMAIN, MANUFACTURER, NAME, VERSION
+from .const import CONF_API_PORT, DOMAIN, MANUFACTURER, NAME, VERSION
 from .coordinator import GfsForecastDataUpdateCoordinator
 from .websocket_api import async_setup as async_setup_websocket_api
 
@@ -33,7 +33,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.debug(f"entry.data: {entry.data}")
 
-    api_port = entry.data.get("api_port", 8000)
+    api_port = entry.data.get("api_port", CONF_API_PORT)
 
     session = async_get_clientsession(hass)
     client = GFSForecastApi(session, api_port)
