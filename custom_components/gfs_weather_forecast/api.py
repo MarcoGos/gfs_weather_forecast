@@ -1,9 +1,14 @@
-from typing import Any
+"""GFS Weather Forecast API client.
 
-# import requests
+This module provides an asynchronous client for interacting with the GFS Weather Forecast API.
+"""
+
 import asyncio
 import logging
+from typing import Any
+
 import aiohttp
+
 from .const import DOMAIN, FORECAST_URL, FULL_FORECAST_URL, STATUS_URL
 
 TIMEOUT = 10
@@ -12,13 +17,16 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
 class GFSForecastApi:
-    _headers: dict[str, str] = {"User-Agent": "Home Assistant (GFS Weather Forecast)"}
-    _raw_data: str = ""
-    _daily_forecast: dict[str, Any] = {}
+    """Client for retrieving GFS weather forecasts and API status."""
 
     def __init__(self, session: aiohttp.ClientSession, api_port: int) -> None:
         self._session = session
         self._api_port = api_port
+        self._headers: dict[str, str] = {
+            "User-Agent": "Home Assistant (GFS Weather Forecast)"
+        }
+        self._raw_data: str = ""
+        self._daily_forecast: dict[str, Any] = {}
 
     async def async_get_forecast(self) -> dict[str, Any]:
         """Get forecast from the API."""
@@ -48,14 +56,14 @@ class GFSForecastApi:
         return forecast
 
     async def __request_forecast(self) -> tuple[bool, dict[str, Any]]:
-        _LOGGER.debug(f"__request_daily_forecast")
+        _LOGGER.debug("__request_forecast")
         success, forecast = await self.__perform_request(
             f"http://localhost:{self._api_port}/{FORECAST_URL}"
         )
         return success, forecast
 
     async def __request_status(self) -> tuple[bool, dict[str, Any]]:
-        _LOGGER.debug(f"__request_daily_forecast")
+        _LOGGER.debug("__request_status")
         success, status = await self.__perform_request(
             f"http://localhost:{self._api_port}/{STATUS_URL}"
         )

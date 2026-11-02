@@ -1,9 +1,6 @@
 import logging
 from datetime import datetime
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.components.weather import (
     ATTR_CONDITION_CLOUDY,
     ATTR_CONDITION_PARTLYCLOUDY,
@@ -14,17 +11,20 @@ from homeassistant.components.weather import (
     ATTR_CONDITION_SUNNY,
     ATTR_FORECAST_CONDITION,
     ATTR_FORECAST_NATIVE_PRECIPITATION,
-    ATTR_FORECAST_PRECIPITATION_PROBABILITY,
     ATTR_FORECAST_NATIVE_TEMP,
     ATTR_FORECAST_NATIVE_TEMP_LOW,
     ATTR_FORECAST_NATIVE_WIND_SPEED,
+    ATTR_FORECAST_PRECIPITATION_PROBABILITY,
     ATTR_FORECAST_TIME,
     ATTR_FORECAST_WIND_BEARING,
-    DOMAIN as SENSOR_DOMAIN,
     Forecast,
     WeatherEntity,
     WeatherEntityFeature,  # type: ignore
 )
+from homeassistant.components.weather.const import (
+    DOMAIN as SENSOR_DOMAIN,
+)
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     UnitOfLength,
     UnitOfPrecipitationDepth,
@@ -32,8 +32,12 @@ from homeassistant.const import (
     UnitOfSpeed,
     UnitOfTemperature,
 )
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util import dt as dt_util
+
+from .const import DEFAULT_NAME, DOMAIN, NAME
 from .coordinator import GfsForecastDataUpdateCoordinator
-from .const import DOMAIN, DEFAULT_NAME, NAME
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -51,6 +55,8 @@ async def async_setup_entry(
 
 
 class GfsForecastWeather(WeatherEntity):
+    """Defines a GFS Forecast weather entity."""
+
     _attr_attribution = "GFS Weather Data via NOAA Nomads server"
     _attr_native_precipitation_unit = UnitOfPrecipitationDepth.MILLIMETERS
     _attr_native_pressure_unit = UnitOfPressure.HPA
@@ -76,9 +82,9 @@ class GfsForecastWeather(WeatherEntity):
             return None
 
         forecast: list[Forecast] = []
-        for key in forecast_data.keys():
+        for key in forecast_data:
             forecast_date = datetime.fromisoformat(key).date()
-            if forecast_date > datetime.today().date():
+            if forecast_date > dt_util.now().date():
                 chance_of_sun = forecast_data[key].get("chance_of_sun")
                 min_temperature_daytime = forecast_data[key].get(
                     "min_temperature_daytime", -999

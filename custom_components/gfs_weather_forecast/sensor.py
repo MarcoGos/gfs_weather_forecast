@@ -1,14 +1,18 @@
+"""Sensor platform for GFS Forecast integration."""
+
 from datetime import datetime
+
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
+)
+from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
 from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE
+from homeassistant.const import PERCENTAGE, EntityCategory
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -125,7 +129,7 @@ class GFSForecastSensor(
             if not str_value:
                 return None
             value = datetime.strptime(str_value, "%Y-%m-%d").date()
-            return value
+            return value  # type: ignore
 
         if self.entity_description.key == "status":
             return status_data.get("status", "").lower()

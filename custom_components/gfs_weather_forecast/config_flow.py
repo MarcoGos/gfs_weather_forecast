@@ -1,18 +1,18 @@
 """Config flow for GFS Forecast integration."""
+
 from __future__ import annotations
 
 import logging
 from typing import Any
-import voluptuous as vol
 
+import probatio as vol
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import NAME, DOMAIN, CONF_API_PORT
 from .api import GFSForecastApi
+from .const import CONF_API_PORT, DOMAIN, NAME
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,9 +28,9 @@ class PlaceholderHub:
 
     async def authenticate(self, session: Any, api_port: int) -> bool:
         """Test if we can find data for the given api port."""
-        _LOGGER.info(f"authenticate called")
+        _LOGGER.info("authenticate called")
         api = GFSForecastApi(session, api_port)
-        return not not await api.async_get_status()
+        return bool(await api.async_get_status())
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
@@ -54,11 +54,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> config_entries.ConfigFlowResult:
         """Handle the initial step."""
         STEP_USER_DATA_SCHEMA = vol.Schema(
             {
-                vol.Required("api_port", default=CONF_API_PORT): int, # type: ignore
+                vol.Required("api_port", default=CONF_API_PORT): int,  # type: ignore
             }
         )
 

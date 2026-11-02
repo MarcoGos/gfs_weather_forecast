@@ -1,10 +1,12 @@
+"""Coordinator for GFS Forecast integration."""
+
+import logging
 from datetime import timedelta
 from typing import Any
-import logging
 
-from homeassistant.helpers.update_coordinator import UpdateFailed, DataUpdateCoordinator
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import GFSForecastApi
 from .const import (
@@ -18,21 +20,20 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
-    _status: dict[str, Any] = {}
-    _forecast: dict[str, Any] = {}
-    _current: dict[str, Any] = {}
-    _first_run: bool = True
-    data: dict[str, Any]
-
     def __init__(
         self, hass: HomeAssistant, client: GFSForecastApi, device_info: DeviceInfo
     ) -> None:
         """Initialize."""
         self.api: GFSForecastApi = client
+        self.data: dict[str, Any] = {}
         self.platforms: list[str] = []
         self.last_updated = None
         self.device_info = device_info
         self._full_forecast: dict[str, Any] = {}
+        self._status: dict[str, Any] = {}
+        self._forecast: dict[str, Any] = {}
+        self._current: dict[str, Any] = {}
+        self._first_run: bool = True
 
         super().__init__(
             hass,
@@ -74,6 +75,7 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
             }
         except Exception as exception:
             _LOGGER.error(
-                f"Error GfsForecastDataUpdateCoordinator _async_update_data: {exception}"
+                "Error GfsForecastDataUpdateCoordinator _async_update_data: %s",
+                exception,
             )
             raise UpdateFailed() from exception

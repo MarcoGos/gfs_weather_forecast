@@ -21,7 +21,8 @@ PLATFORMS: list[Platform] = [Platform.WEATHER, Platform.SENSOR]
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-async def async_setup(hass: HomeAssistant, config: Any) -> bool:
+async def async_setup(hass: HomeAssistant, _config: Any) -> bool:
+    """Set up the GFS Forecast integration."""
     async_setup_websocket_api(hass)
     return True
 
@@ -31,7 +32,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
 
-    _LOGGER.debug(f"entry.data: {entry.data}")
+    _LOGGER.debug("entry.data: %s", entry.data)
 
     api_port = entry.data.get("api_port", CONF_API_PORT)
 
