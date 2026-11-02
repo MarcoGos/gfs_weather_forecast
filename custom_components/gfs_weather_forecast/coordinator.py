@@ -54,6 +54,11 @@ class GfsForecastDataUpdateCoordinator(DataUpdateCoordinator):
                 self._full_forecast = full_forecast
                 self._current = self._status.get("current", {})
                 self._first_run = False
+            elif not self._full_forecast:
+                try:
+                    self._full_forecast = await self.api.async_get_full_forecast()
+                except (ValueError, TypeError) as exception:
+                    _LOGGER.debug("Initial GFS forecast is not ready: %s", exception)
 
             status = {k: v for k, v in self._status.items() if not isinstance(v, dict)}
             status |= {

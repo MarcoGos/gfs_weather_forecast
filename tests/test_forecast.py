@@ -128,14 +128,39 @@ class ForecastTests(unittest.IsolatedAsyncioTestCase):
             "status": "Loading",
             "current": {"run": 1},
         }
+        data = await coordinator._async_update_data()
+        self.assertEqual(data["full_forecast"], self.payload)
+        self.client.async_get_full_forecast.assert_awaited_once()
+        self.client.async_get_forecast.assert_not_awaited()
+        self.assertTrue(coordinator._first_run)
         await coordinator._async_update_data()
-        self.client.async_get_full_forecast.assert_not_awaited()
+        self.client.async_get_full_forecast.assert_awaited_once()
         self.client.async_get_status.return_value = {
             "status": "Finished",
             "current": {"run": 1},
         }
-        await coordinator._async_update_data()
-        self.client.async_get_full_forecast.assert_awaited_once()
+        updated = {**self.payload, "6": {"tmax": 14}}
+        self.client.async_get_full_forecast.return_value = updated
+        data = await coordinator._async_update_data()
+        self.assertEqual(data["full_forecast"], updated)
+        self.assertEqual(self.client.async_get_full_forecast.await_count, 2)
+        self.client.async_get_forecast.assert_awaited_once()
+
+    async def test_startup_during_loading_retries_unavailable_forecast(self):
+        for error in (ValueError("Not ready"), TypeError("Invalid info")):
+            with self.subTest(error=error):
+                coordinator = self.load_coordinator()
+                self.client.async_get_status.return_value = {"status": "Loading"}
+                self.client.async_get_full_forecast.side_effect = error
+                data = await coordinator._async_update_data()
+                self.assertEqual(data["full_forecast"], {})
+                self.assertEqual(data["status"]["status"], "Loading")
+                self.assertTrue(coordinator._first_run)
+                self.client.async_get_full_forecast.assert_awaited_once()
+                self.client.async_get_full_forecast.side_effect = None
+                data = await coordinator._async_update_data()
+                self.assertEqual(data["full_forecast"], self.payload)
+                self.assertEqual(self.client.async_get_full_forecast.await_count, 2)
 
     async def test_failed_refresh_retains_cache_and_retries(self):
         coordinator = self.load_coordinator()
@@ -169,6 +194,7 @@ class ForecastTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_websocket_cached_data_and_entry_selection(self):
         coordinator = self.load_coordinator()
+        self.client.async_get_status.return_value = {"status": "Loading"}
         coordinator.data = await coordinator._async_update_data()
         websocket = types.SimpleNamespace(
             websocket_command=lambda schema: lambda function: function,
