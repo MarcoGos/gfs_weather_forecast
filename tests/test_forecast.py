@@ -87,7 +87,9 @@ class ForecastTests(unittest.IsolatedAsyncioTestCase):
             "homeassistant.helpers.update_coordinator": types.SimpleNamespace(
                 DataUpdateCoordinator=DataUpdateCoordinator, UpdateFailed=RuntimeError
             ),
-            "homeassistant.helpers.entity": types.SimpleNamespace(DeviceInfo=dict),
+            "homeassistant.helpers.device_registry": types.SimpleNamespace(
+                DeviceInfo=dict
+            ),
             "homeassistant.core": types.SimpleNamespace(
                 HomeAssistant=MagicMock, callback=lambda function: function
             ),
@@ -196,13 +198,24 @@ class ForecastTests(unittest.IsolatedAsyncioTestCase):
         coordinator = self.load_coordinator()
         self.client.async_get_status.return_value = {"status": "Loading"}
         coordinator.data = await coordinator._async_update_data()
-        websocket = types.SimpleNamespace(
-            websocket_command=lambda schema: lambda function: function,
-            ActiveConnection=MagicMock,
-            async_register_command=MagicMock(),
+        websocket = types.ModuleType("homeassistant.components.websocket_api")
+        websocket.websocket_command = lambda schema: lambda function: function
+        websocket.ActiveConnection = MagicMock
+        websocket.async_register_command = MagicMock()
+        websocket.__path__ = []
+        components = types.ModuleType("homeassistant.components")
+        components.__path__ = []
+        components.websocket_api = websocket
+        decorators = types.ModuleType(
+            "homeassistant.components.websocket_api.decorators"
         )
-        sys.modules["homeassistant.components"] = types.SimpleNamespace(
-            websocket_api=websocket
+        decorators.websocket_command = websocket.websocket_command
+        sys.modules.update(
+            {
+                "homeassistant.components": components,
+                "homeassistant.components.websocket_api": websocket,
+                "homeassistant.components.websocket_api.decorators": decorators,
+            }
         )
         sys.modules["voluptuous"] = types.SimpleNamespace(
             Required=lambda value: value, Optional=lambda value: value
