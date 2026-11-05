@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Build and attach release zip
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build gfs_weather_forecast.zip
+        run: |
+          cd custom_components/gfs_weather_forecast
+          zip -r ../../gfs_weather_forecast.zip . \
+            -x "*__pycache__*" \
+            -x "*.pyc" \
+            -x "*.pytest_cache*" \
+            -x "*.DS_Store*"
+      - name: Upload zip to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: gfs_weather_forecast.zip
+          fail_on_unmatched_files: true
